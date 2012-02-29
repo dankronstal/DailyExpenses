@@ -10,11 +10,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.dankronstal.dailyexpenses.data.expensecontentprovider" android:name="com.dankronstal.dailyexpenses.data.ExpenseContentProvidertentProvider"/>
-        <provider
-            android:authorities="com.dankronstal.dailyexpenses.data.expensescontentprovider" android:name="com.dankronstal.dailyexpenses.data.ExpenseContentProvider"/>
-        <provider
-            android:authorities="com.dankronstal.dailyexpenses.data.expensescontentprovider" android:name=".data.ExpenseContentProvider"/>
+            android:authorities="com.dankronstal.dailyexpenses.data.expensecontentprovider" android:name="com.dankronstal.dailyexpenses.data.ExpenseContentProvider"/>
         <activity android:name=".ExpenseEditing">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT"/>
