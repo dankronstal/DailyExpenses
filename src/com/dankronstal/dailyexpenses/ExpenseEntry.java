@@ -94,23 +94,15 @@ public class ExpenseEntry extends Activity {
 	}
 
 	/**
-	 * Bind menu items to activities
-	 */
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		// TODO Auto-generated method stub
-		return super.onMenuItemSelected(featureId, item);
-	}
-
-	/**
 	 * bindSpinnerItems:
 	 * Queries the database to find the list of unique ExpenseType values for presentation in the list.
 	 */
 	private void bindExpenseTypeSpinner() {
 		ArrayList<CharSequence> listOfTypes = new ArrayList<CharSequence>();        
         try {			
-			String[] projection = new String[]{ExpenseContentProvider.CATEGORY}; 
-			Cursor results = managedQuery(ExpenseContentProvider.CONTENT_URI, projection, null, null, null);		//adding DISTINCT as a "hack" - from: http://stackoverflow.com/questions/2315203/android-distinct-and-groupby-in-contentresolver
+			String[] projection = new String[]{ExpenseContentProvider.CATEGORY};
+			String selection = "1=1) GROUP BY (" + ExpenseContentProvider.CATEGORY; //sloppy sql injection hack to get distinct categories 
+			Cursor results = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, selection, null, null);
 			if(results != null && results.getCount() > 0){
 				results.moveToFirst();
 				do{
@@ -120,7 +112,7 @@ public class ExpenseEntry extends Activity {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}        
+		}
         ArrayAdapter<CharSequence> typesArrayAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, listOfTypes);
         spinnerExpenseType.setAdapter(typesArrayAdapter);
 	}

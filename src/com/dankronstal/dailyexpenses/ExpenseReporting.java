@@ -3,19 +3,27 @@ package com.dankronstal.dailyexpenses;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.dankronstal.dailyexpenses.R;
 import com.dankronstal.dailyexpenses.data.Expense;
 import com.dankronstal.dailyexpenses.data.ExpenseContentProvider;
 import com.jjoe64.graphview.BarGraphView;
@@ -29,12 +37,15 @@ public class ExpenseReporting extends Activity {
 	private static String DESCENDING = " DESC ";
 		
 	private String currentlySortedBy = ExpenseContentProvider.DATEINCURRED;
+	private AlertDialog.Builder dialogBuilder;
 	
 	protected TextView txtFirstDate;
 	protected TextView txtLastDate;
 	protected TextView txtAvgSpend;
 	protected LinearLayout layoutReport;
 	protected TableLayout tblExpenses;
+	protected MenuItem miReportScope;
+	protected View dialogChooseSpan;
 	
 	protected ExpenseContentProvider ecp = new ExpenseContentProvider();
 	
@@ -49,15 +60,56 @@ public class ExpenseReporting extends Activity {
 		tblExpenses = (TableLayout) findViewById(R.id.tblExpenses);
 		tblExpenses.removeAllViews();
 		ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy);
-		bindReportTable(expenses);	
+		bindReportTable(expenses);
+			
+		inflateDialogChooseSpan();
 				
+		dialogBuilder = new AlertDialog.Builder(this);
+		dialogBuilder.setTitle(R.string.lbl_report_choose_span);
+		dialogBuilder.setView(dialogChooseSpan);
+		//dialogBuilder.show();
+		
 		try{
-		graphViewTest(expenses);
+			graphViewTest(expenses);
 		}catch(Exception e){
 			Log.getStackTraceString(e);
-		}
+		}	
 		
+	}
+
+	/**
+	 * @return
+	 */
+	private void inflateDialogChooseSpan() {
+		LayoutInflater inflater = LayoutInflater.from(this);
+		dialogChooseSpan = inflater.inflate(R.layout.report_choose_span, null);
 		
+		EditText from = (EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanFrom);
+		from.setInputType(EditorInfo.TYPE_NULL);
+		from.setOnClickListener(lSpanFromClicked);
+		Button fromSave = (Button)dialogChooseSpan.findViewById(R.id.btnSpanSaveFrom);
+		fromSave.setOnClickListener(lSpanFromSaveClicked);
+		
+		EditText to = (EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanTo);
+		to.setInputType(EditorInfo.TYPE_NULL);
+		to.setOnClickListener(lSpanToClicked);
+		Button toSave = (Button)dialogChooseSpan.findViewById(R.id.btnSpanSaveTo);
+		toSave.setOnClickListener(lSpanToSaveClicked);
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.report_menu, menu);
+	    
+	    MenuItem mi = menu.findItem(R.id.miSpanOf);
+		mi.setIcon(android.R.drawable.ic_menu_view);
+		mi.setOnMenuItemClickListener(lReportBySpanClicked);
+		
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
@@ -78,7 +130,7 @@ public class ExpenseReporting extends Activity {
 				categories.add(e.getCategory());
         }
         
-        ArrayList<GraphViewSeries> gvs = new ArrayList();
+        ArrayList<GraphViewSeries> gvs = new ArrayList<GraphViewSeries>();
         for(int i = 0; i < categories.size(); i++){
         	GraphViewData[] gvd = new GraphViewData[expenses.size()];
         	for(int j = 0; j < expenses.size(); j++){
@@ -86,8 +138,7 @@ public class ExpenseReporting extends Activity {
         			gvd[j] = new GraphViewData(Double.valueOf(j), expenses.get(j).getAmount());        				
         		}else{
         			gvd[j] = new GraphViewData(Double.valueOf(j), 0.0d);
-        		}
-        			
+        		}        			
         	}
         	gvs.add(new GraphViewSeries(categories.get(i), colors[i], gvd));
         }
@@ -98,7 +149,7 @@ public class ExpenseReporting extends Activity {
 			data[i] = new GraphViewData(Double.valueOf(String.valueOf(i)), expenses.get(i).getAmount());
 			labels[i] = DateHelper.makeShortDate(expenses.get(i).getDateIncurred());
 		}
-		GraphViewSeries dataSeries = new GraphViewSeries(data);
+		// dataSeries = new GraphViewSeries(data);
 		  
 		GraphView graphView = new BarGraphView(  
 		      this // context  
@@ -216,5 +267,48 @@ public class ExpenseReporting extends Activity {
 			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.DATEINCURRED);
 			bindReportTable(expenses);
 		}
+	};
+	
+	private OnClickListener lSpanFromClicked = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.VISIBLE);
+		}
+	};
+	
+	private OnClickListener lSpanFromSaveClicked = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			((EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanFrom))
+				.setText(DateHelper.makeShortDate((DatePicker)dialogChooseSpan.findViewById(R.id.dateSpanFrom)));
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.GONE);
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
+		}
+	};
+	
+	private OnClickListener lSpanToClicked = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.VISIBLE);
+		}
+	};
+	
+	private OnClickListener lSpanToSaveClicked = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			((EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanTo))
+				.setText(DateHelper.makeShortDate((DatePicker)dialogChooseSpan.findViewById(R.id.dateSpanTo)));
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.GONE);
+			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
+		}
+	};
+	private OnMenuItemClickListener lReportBySpanClicked = new OnMenuItemClickListener(){
+		@Override
+		public boolean onMenuItemClick(MenuItem mi) {
+			dialogBuilder.show();
+			return false;
+		}		
 	};
 }

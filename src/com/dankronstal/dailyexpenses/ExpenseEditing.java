@@ -143,14 +143,15 @@ public class ExpenseEditing extends Activity {
 	private void bindExpenseTypeSpinner(CharSequence category) {
 		ArrayList<CharSequence> listOfTypes = new ArrayList<CharSequence>();        
         try {			
-			String[] projection = new String[]{ExpenseContentProvider.CATEGORY}; 
-			Cursor c = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, null, null, null);
-			if (c.moveToFirst()) {
+        	String[] projection = new String[]{ExpenseContentProvider.CATEGORY};
+			String selection = "1=1) GROUP BY (" + ExpenseContentProvider.CATEGORY; //sloppy sql injection hack to get distinct categories 
+			Cursor results = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, selection, null, null);
+			if (results.moveToFirst()) {
 		    	do{
-					listOfTypes.add(c.getString(0));
-				}while(c.moveToNext());
+					listOfTypes.add(results.getString(0));
+				}while(results.moveToNext());
 		    }
-		    c.close();
+			results.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

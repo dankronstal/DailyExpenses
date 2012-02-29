@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/miReportScope" android:title="@string/lbl_mi_viewby">
+        <menu>
+            <item android:id="@+id/miDayOf" android:title="@string/lbl_mi_dayof"></item><item android:id="@+id/miWeekOf" android:title="@string/lbl_mi_weekof"></item><item android:id="@+id/miMonthOf" android:title="@string/lbl_mi_monthof"></item><item android:id="@+id/miYearOf" android:title="@string/lbl_mi_yearof"></item><item android:id="@+id/miSpanOf" android:title="@string/lbl_mi_spanof"></item>
+        </menu>
+    </item>
+    
+
+</menu>
