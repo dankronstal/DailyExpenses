@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="app_name">Daily Expenses</string>
+    <string name="btn_add_type">Add Type</string>
+    <string name="txt_new_type_name">New Type Name</string>
+    <string name="btn_new_type_cancel">Cancel</string>
+    <string name="txt_amount">Amount</string>
+    <string name="btn_save">Save</string>
+    <string name="txt_todays_spend">Spent Today:</string>
+    <string name="txt_todays_spend_value">0.00</string>
+    <string name="txt_no_expenses">No records for selected date.</string>
+    <string name="lbl_menu_edit">Edit Expenses</string>
+    <string name="lbl_edit_type">Type</string>
+    <string name="lbl_edit_amount">Amount</string>
+    <string name="btn_save_edit">Update</string>
+    <string name="lbl_edit_id">ID</string>
+    <string name="lbl_menu_report">Reports</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trExpense"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/txtEditID"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lbl_edit_id"
+                android:textAppearance="?android:attr/textAppearanceSmall" android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/txtEditExpenseType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lbl_edit_type"
+                android:textAppearance="?android:attr/textAppearanceLarge" android:minEms="9"/>
+
+            <TextView
+                android:id="@+id/txtEditExpenseAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lbl_edit_amount"
+                android:textAppearance="?android:attr/textAppearanceLarge" android:minEms="5"/>
+
+            <TextView
+                android:id="@+id/txtEditDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/txtEditCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/txtEditExchange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</TableRow>

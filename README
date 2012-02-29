@@ -1,0 +1,16 @@
+DAILY EXPENSES v0.0.2
+
+Author: Dan Kronstal
+
+Purpose: After some time travelling with my wife, and using 
+the "notebook" application in the iPod to keep track of our
+daily expenses, I decided to try writing an Android application
+for this task.  This is my first Android application, and as
+such likely falls victim to many faults.
+
+This application has been developed using the MOTODEV Eclipse
+environment (http://developer.motorola.com/docstools/motodevstudio/download/), 
+and uses the GraphView library (https://github.com/jjoe64/GraphView).
+
+Fine Print: No warranty is offered or implied. This is a 
+personal project. Do not use it. 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" android:isScrollContainer="true">
+
+    <DatePicker
+        android:id="@+id/dateToday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_marginTop="25dp"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:visibility="visible" >
+
+        <TextView
+            android:id="@+id/lblSpentToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/txt_todays_spend"
+            android:textAppearance="?android:attr/textAppearanceLarge" android:width="135dp"/>
+
+        <TextView
+            android:id="@+id/lblTodaysSpendValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_todays_spend_value"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutExpenseType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" android:layout_marginTop="15dp">
+
+        <Spinner
+            android:id="@+id/spinnerExpenseType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnAddType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="@string/btn_add_type" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutNewType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" android:layout_marginTop="15dp">
+
+        <EditText
+            android:id="@+id/txtAddType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/txt_new_type_name" />
+
+        <Button
+            android:id="@+id/btnSaveNewType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="@string/btn_new_type_cancel" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/txtAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/txt_amount"
+        android:inputType="numberDecimal"
+        android:textSize="35dp" android:layout_marginTop="15dp">
+    </EditText>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/btn_save" android:layout_marginTop="15dp"/>
+
+</LinearLayout>
