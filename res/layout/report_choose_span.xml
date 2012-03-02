@@ -8,7 +8,7 @@
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/layoutReportSpan"
@@ -22,7 +22,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:inputType="date" >
+                android:inputType="date" android:hint="@string/lbl_report_date_start">
 
                 <requestFocus />
             </EditText>
@@ -44,8 +44,17 @@
                 android:clickable="true"
                 android:cursorVisible="false"
                 android:focusable="false"
-                android:inputType="date" />
+                android:inputType="date" android:hint="@string/lbl_report_date_end"/>
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/lbl_report_dates_inclusive"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <Button
             android:id="@+id/btnReportFilter"
@@ -60,13 +69,13 @@
         android:id="@+id/layoutReportSpanFrom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
+        android:orientation="vertical" android:visibility="gone">
+
         <DatePicker
             android:id="@+id/dateSpanFrom"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
         <Button
             android:id="@+id/btnSpanSaveFrom"
@@ -82,18 +91,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone" >
-
+
         <DatePicker
             android:id="@+id/dateSpanTo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
         <Button
             android:id="@+id/btnSpanSaveTo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Button" />
+
     </LinearLayout>
 
 </FrameLayout>

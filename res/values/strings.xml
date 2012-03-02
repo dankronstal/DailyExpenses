@@ -25,4 +25,7 @@
     <string name="lbl_report_spanto"> to </string>
     <string name="lbl_report_filter">Use These Dates</string>
     <string name="lbl_edit_zeroout">Enter a value of "0.00" to remove this expense.</string>
+    <string name="lbl_report_dates_inclusive">All dates represent an inclusive filter.</string>
+    <string name="lbl_report_date_end">End Date</string>
+    <string name="lbl_report_date_start">Start Date</string>
 </resources>

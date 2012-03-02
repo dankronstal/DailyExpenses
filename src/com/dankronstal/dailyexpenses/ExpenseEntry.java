@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -102,16 +103,16 @@ public class ExpenseEntry extends Activity {
         try {			
 			String[] projection = new String[]{ExpenseContentProvider.CATEGORY};
 			String selection = "1=1) GROUP BY (" + ExpenseContentProvider.CATEGORY; //sloppy sql injection hack to get distinct categories 
-			Cursor results = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, selection, null, null);
-			if(results != null && results.getCount() > 0){
-				results.moveToFirst();
+			Cursor c = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, selection, null, null);
+			if(c != null && c.getCount() > 0){
+				c.moveToFirst();
 				do{
-					listOfTypes.add((CharSequence)results.getString(0));
-				}while(results.moveToNext());
+					listOfTypes.add((CharSequence)c.getString(0));
+				}while(c.moveToNext());
 			}
+			c.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.getStackTraceString(e);
 		}
         ArrayAdapter<CharSequence> typesArrayAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, listOfTypes);
         spinnerExpenseType.setAdapter(typesArrayAdapter);

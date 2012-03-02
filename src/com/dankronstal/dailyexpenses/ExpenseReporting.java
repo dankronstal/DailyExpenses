@@ -1,9 +1,11 @@
 package com.dankronstal.dailyexpenses;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,13 +41,17 @@ public class ExpenseReporting extends Activity {
 	private String currentlySortedBy = ExpenseContentProvider.DATEINCURRED;
 	private AlertDialog.Builder dialogBuilder;
 	
+	protected String dateSpanFrom = new String();
+	protected String dateSpanTo = new String();
+	
 	protected TextView txtFirstDate;
 	protected TextView txtLastDate;
 	protected TextView txtAvgSpend;
 	protected LinearLayout layoutReport;
 	protected TableLayout tblExpenses;
 	protected MenuItem miReportScope;
-	protected View dialogChooseSpan;
+	protected View viewChooseSpan;
+	protected Dialog dialogChooseSpan; 
 	
 	protected ExpenseContentProvider ecp = new ExpenseContentProvider();
 	
@@ -59,14 +65,14 @@ public class ExpenseReporting extends Activity {
 		
 		tblExpenses = (TableLayout) findViewById(R.id.tblExpenses);
 		tblExpenses.removeAllViews();
-		ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy);
+		ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, null, null);
 		bindReportTable(expenses);
 			
 		inflateDialogChooseSpan();
 				
 		dialogBuilder = new AlertDialog.Builder(this);
 		dialogBuilder.setTitle(R.string.lbl_report_choose_span);
-		dialogBuilder.setView(dialogChooseSpan);
+		dialogBuilder.setView(viewChooseSpan);
 		//dialogBuilder.show();
 		
 		try{
@@ -82,19 +88,22 @@ public class ExpenseReporting extends Activity {
 	 */
 	private void inflateDialogChooseSpan() {
 		LayoutInflater inflater = LayoutInflater.from(this);
-		dialogChooseSpan = inflater.inflate(R.layout.report_choose_span, null);
+		viewChooseSpan = inflater.inflate(R.layout.report_choose_span, null);
 		
-		EditText from = (EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanFrom);
+		EditText from = (EditText)viewChooseSpan.findViewById(R.id.txtReportSpanFrom);
 		from.setInputType(EditorInfo.TYPE_NULL);
 		from.setOnClickListener(lSpanFromClicked);
-		Button fromSave = (Button)dialogChooseSpan.findViewById(R.id.btnSpanSaveFrom);
+		Button fromSave = (Button)viewChooseSpan.findViewById(R.id.btnSpanSaveFrom);
 		fromSave.setOnClickListener(lSpanFromSaveClicked);
 		
-		EditText to = (EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanTo);
+		EditText to = (EditText)viewChooseSpan.findViewById(R.id.txtReportSpanTo);
 		to.setInputType(EditorInfo.TYPE_NULL);
 		to.setOnClickListener(lSpanToClicked);
-		Button toSave = (Button)dialogChooseSpan.findViewById(R.id.btnSpanSaveTo);
+		Button toSave = (Button)viewChooseSpan.findViewById(R.id.btnSpanSaveTo);
 		toSave.setOnClickListener(lSpanToSaveClicked);
+		
+		Button applyFilter = (Button)viewChooseSpan.findViewById(R.id.btnReportFilter);
+		applyFilter.setOnClickListener(lUseDateSpanFilterClicked);
 	}
 	
 	/* (non-Javadoc)
@@ -108,6 +117,9 @@ public class ExpenseReporting extends Activity {
 	    MenuItem mi = menu.findItem(R.id.miSpanOf);
 		mi.setIcon(android.R.drawable.ic_menu_view);
 		mi.setOnMenuItemClickListener(lReportBySpanClicked);
+		
+		mi = menu.findItem(R.id.miDayOf);
+		mi.setOnMenuItemClickListener(lReportByDayClicked);
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -173,6 +185,7 @@ public class ExpenseReporting extends Activity {
 	 * @param expenses
 	 */
 	private void bindReportTable(ArrayList<Expense> expenses) {
+		tblExpenses.removeAllViews();
 		if(expenses.size() > 0)
 		{
 			//title row:
@@ -211,10 +224,16 @@ public class ExpenseReporting extends Activity {
 	}
 
 	/**
-	 * 
+	 * multi-purpose method for retrieving expense records.
+	 * pass in null dates to get all records.
+	 * pass in a null endDate to get only single specified date.
+	 * otherwise, dates passed will be used.
+	 * @param sortOrder
+	 * @param startDate
+	 * @param endDate
 	 * @return
 	 */
-	private ArrayList<Expense> getAllExpenses(String sortOrder) {
+	private ArrayList<Expense> getAllExpenses(String sortOrder, String startDate, String endDate) {
 		String[] sortBits = currentlySortedBy.split(" ");
 		if(sortBits[0].compareTo(sortOrder) == 0)
 			if(sortBits.length == 1)
@@ -222,20 +241,34 @@ public class ExpenseReporting extends Activity {
 			else
 				sortOrder += currentlySortedBy.indexOf(DESCENDING) > 0 ? ASCENDING : DESCENDING;
 		currentlySortedBy = sortOrder;
-		Cursor c = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, ExpenseContentProvider.FULL_PROJECTION, null, null, sortOrder);
+		String where = null;
+		String[] args = null;
+		if(startDate != null && startDate.length() > 0 && endDate != null && endDate.length() > 0){
+			where = ExpenseContentProvider.DATEINCURRED + " >= date('"+startDate+"') AND " + ExpenseContentProvider.DATEINCURRED + " <= date('"+endDate+"')";
+			//args = new String[] {DateHelper.makeShortDate(startDate), DateHelper.makeShortDate(endDate)};
+		}
+		if(startDate != null && endDate == null){
+			where = ExpenseContentProvider.DATEINCURRED + " like '"+DateHelper.makeShortDate(startDate)+"%'";
+			//args = new String[] {DateHelper.makeShortDate(startDate)};
+		}
 		ArrayList<Expense> expenses = new ArrayList<Expense>();
-		if (c.moveToFirst()) {
-	    	do{
-				expenses.add(new Expense(
-						c.getInt(0),
-						c.getDouble(1),
-						c.getString(2),
-						c.getString(3),							
-						c.getString(4),
-						c.getDouble(5)));
-			}while(c.moveToNext());
-	    }
-	    c.close();
+		try{
+			Cursor c = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, ExpenseContentProvider.FULL_PROJECTION, where, args, sortOrder);
+			if (c.moveToFirst()) {
+		    	do{
+					expenses.add(new Expense(
+							c.getInt(0),
+							c.getDouble(1),
+							c.getString(2),
+							c.getString(3),							
+							c.getString(4),
+							c.getDouble(5)));
+				}while(c.moveToNext());
+		    }
+			c.close();
+		}catch(Exception e){
+			Log.getStackTraceString(e);
+		}    
 		return expenses;
 	}
 	
@@ -244,7 +277,7 @@ public class ExpenseReporting extends Activity {
 		public void onClick(View v) {			
 			tblExpenses = (TableLayout) findViewById(R.id.tblExpenses);
 			tblExpenses.removeAllViews();
-			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.CATEGORY);
+			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.CATEGORY, dateSpanFrom, dateSpanTo);
 			bindReportTable(expenses);
 		}
 	};
@@ -254,7 +287,7 @@ public class ExpenseReporting extends Activity {
 		public void onClick(View v) {
 			tblExpenses = (TableLayout) findViewById(R.id.tblExpenses);
 			tblExpenses.removeAllViews();
-			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.AMOUNT);
+			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.AMOUNT, dateSpanFrom, dateSpanTo);
 			bindReportTable(expenses);
 		}
 	};
@@ -264,7 +297,7 @@ public class ExpenseReporting extends Activity {
 		public void onClick(View v) {
 			tblExpenses = (TableLayout) findViewById(R.id.tblExpenses);
 			tblExpenses.removeAllViews();
-			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.DATEINCURRED);
+			ArrayList<Expense> expenses = getAllExpenses(ExpenseContentProvider.DATEINCURRED, dateSpanFrom, dateSpanTo);
 			bindReportTable(expenses);
 		}
 	};
@@ -272,43 +305,64 @@ public class ExpenseReporting extends Activity {
 	private OnClickListener lSpanFromClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.VISIBLE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.VISIBLE);
 		}
 	};
 	
 	private OnClickListener lSpanFromSaveClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			((EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanFrom))
-				.setText(DateHelper.makeShortDate((DatePicker)dialogChooseSpan.findViewById(R.id.dateSpanFrom)));
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.GONE);
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
+			((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanFrom))
+				.setText(DateHelper.makeShortDate((DatePicker)viewChooseSpan.findViewById(R.id.dateSpanFrom)));
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpanFrom)).setVisibility(View.GONE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
 		}
 	};
 	
 	private OnClickListener lSpanToClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.VISIBLE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.GONE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.VISIBLE);
 		}
 	};
 	
 	private OnClickListener lSpanToSaveClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			((EditText)dialogChooseSpan.findViewById(R.id.txtReportSpanTo))
-				.setText(DateHelper.makeShortDate((DatePicker)dialogChooseSpan.findViewById(R.id.dateSpanTo)));
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.GONE);
-			((LinearLayout)dialogChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
+			((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanTo))
+				.setText(DateHelper.makeShortDate((DatePicker)viewChooseSpan.findViewById(R.id.dateSpanTo)));
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpanTo)).setVisibility(View.GONE);
+			((LinearLayout)viewChooseSpan.findViewById(R.id.layoutReportSpan)).setVisibility(View.VISIBLE);
 		}
 	};
+	
 	private OnMenuItemClickListener lReportBySpanClicked = new OnMenuItemClickListener(){
 		@Override
 		public boolean onMenuItemClick(MenuItem mi) {
-			dialogBuilder.show();
+			dialogChooseSpan = dialogBuilder.show();
 			return false;
 		}		
+	};
+	
+	private OnMenuItemClickListener lReportByDayClicked = new OnMenuItemClickListener(){
+		@Override
+		public boolean onMenuItemClick(MenuItem mi) {
+			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, null);
+			bindReportTable(expenses);
+			return false;
+		}		
+	};
+	
+	private OnClickListener lUseDateSpanFilterClicked = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			dateSpanFrom = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanFrom)).getText().toString();
+			dateSpanTo = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanTo)).getText().toString();
+			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, dateSpanTo);
+			bindReportTable(expenses);
+			dialogChooseSpan.dismiss();
+		}
 	};
 }
