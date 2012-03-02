@@ -24,4 +24,5 @@
     <string name="lbl_report_choose_span">Choose Span of Days:</string>
     <string name="lbl_report_spanto"> to </string>
     <string name="lbl_report_filter">Use These Dates</string>
+    <string name="lbl_edit_zeroout">Enter a value of "0.00" to remove this expense.</string>
 </resources>

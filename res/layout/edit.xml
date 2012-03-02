@@ -26,29 +26,47 @@
     <LinearLayout
         android:id="@+id/layoutUpdate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:orientation="vertical" android:visibility="gone">
 
-        <Spinner
-            android:id="@+id/spinnerEditType"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        <LinearLayout
+            android:id="@+id/layoutUpdateFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/txtEditAmount"
+            <Spinner
+                android:id="@+id/spinnerEditType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <EditText
+                android:id="@+id/txtEditAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="3"
+                android:inputType="numberDecimal" >
+
+                <requestFocus />
+            </EditText>
+
+            <Button
+                android:id="@+id/btnSaveEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_save_edit" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="3"
-            android:inputType="numberDecimal" >
+            android:layout_gravity="center"
+            android:text="@string/lbl_edit_zeroout"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <requestFocus />
-        </EditText>
-
-        <Button
-            android:id="@+id/btnSaveEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_save_edit" />
     </LinearLayout>
 
 </LinearLayout>

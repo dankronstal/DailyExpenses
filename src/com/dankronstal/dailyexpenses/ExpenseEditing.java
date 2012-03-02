@@ -47,10 +47,9 @@ public class ExpenseEditing extends Activity {
 		datePickerEdit = (DatePicker) findViewById(R.id.datePickerEdit);
 		layoutUpdate = (LinearLayout) findViewById(R.id.layoutUpdate);
 		txtEditId = (TextView)findViewById(R.id.txtEditID);
-		spinnerEditType = (Spinner) findViewById(R.id.spinnerExpenseType);
+		spinnerEditType = (Spinner) findViewById(R.id.spinnerEditType);
 		txtEditAmount = (TextView) findViewById(R.id.txtEditAmount);
-		btnSaveEdit = (Button) findViewById(R.id.btnSaveEdit);
-		
+		btnSaveEdit = (Button) findViewById(R.id.btnSaveEdit);		
 		
 		Bundle extras = getIntent().getExtras();		
 		String dateFromMain = extras.getString("dateFromMain");
@@ -143,33 +142,26 @@ public class ExpenseEditing extends Activity {
 	private void bindExpenseTypeSpinner(CharSequence category) {
 		ArrayList<CharSequence> listOfTypes = new ArrayList<CharSequence>();        
         try {			
-        	String[] projection = new String[]{ExpenseContentProvider.CATEGORY};
+			String[] projection = new String[]{ExpenseContentProvider.CATEGORY};
 			String selection = "1=1) GROUP BY (" + ExpenseContentProvider.CATEGORY; //sloppy sql injection hack to get distinct categories 
 			Cursor results = getContentResolver().query(ExpenseContentProvider.CONTENT_URI, projection, selection, null, null);
-			if (results.moveToFirst()) {
-		    	do{
-					listOfTypes.add(results.getString(0));
+			if(results != null && results.getCount() > 0){
+				results.moveToFirst();
+				do{
+					listOfTypes.add((CharSequence)results.getString(0));
 				}while(results.moveToNext());
-		    }
-			results.close();
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        spinnerEditType = (Spinner) findViewById(R.id.spinnerEditType);
-        
         ArrayAdapter<CharSequence> typesArrayAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, listOfTypes);
         spinnerEditType.setAdapter(typesArrayAdapter);
         
-        ArrayAdapter<CharSequence> aa = (ArrayAdapter) spinnerEditType.getAdapter(); //cast to an ArrayAdapter
-        int spinnerPosition = aa.getPosition(category);      
+        int spinnerPosition = typesArrayAdapter.getPosition(category);
         spinnerEditType.setSelection(spinnerPosition);//set the default according to value
 	}
 	
-		/**
-	 * 
-	 */
     private OnDateChangedListener lDateEditChanged = new OnDateChangedListener() {
  		@Override
 		public void onDateChanged(DatePicker picker, int year, int month, int dayOfMonth) {
@@ -193,20 +185,18 @@ public class ExpenseEditing extends Activity {
 		@Override
 		public void onClick(View v) {
 			ContentValues values = new ContentValues();
-			//values.put(ExpenseContentProvider.ID, Integer.valueOf(txtEditId.getText().toString()));
 			values.put(ExpenseContentProvider.AMOUNT, Double.parseDouble(txtEditAmount.getText().toString()));
 			values.put(ExpenseContentProvider.CATEGORY, spinnerEditType.getSelectedItem().toString());
-			//values.put(ExpenseContentProvider.CURRENCY, ((TextView)v.findViewById(R.id.txtEditCurrency)).getText().toString());
-			//values.put(ExpenseContentProvider.DATEINCURRED, ((TextView)v.findViewById(R.id.txtEditExchange)).getText().toString());
-			//values.put(ExpenseContentProvider.EXCHANGE, ((TextView)v.findViewById(R.id.txtEditDate)).getText().toString());
 			String where = ExpenseContentProvider.ID + " = ?";
-			String[] args = new String[]{txtEditId.getText().toString()};
+			String[] args = new String[]{txtEditId.getText().toString()};			
 			try{
-				getContentResolver().update(ExpenseContentProvider.CONTENT_URI, values, where, args);
+				if(Double.parseDouble(values.get(ExpenseContentProvider.AMOUNT).toString()) > 0)
+					getContentResolver().update(ExpenseContentProvider.CONTENT_URI, values, where, args);
+				else
+					getContentResolver().delete(ExpenseContentProvider.CONTENT_URI, where, args);				
 			}catch(Exception e){
 				Log.getStackTraceString(e);
-			}
-			
+			}			
 			layoutUpdate.setVisibility(View.GONE);
 			bindExpenseTable();
 		}
