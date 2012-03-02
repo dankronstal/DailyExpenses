@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -72,8 +73,8 @@ public class ExpenseReporting extends Activity {
 				
 		dialogBuilder = new AlertDialog.Builder(this);
 		dialogBuilder.setTitle(R.string.lbl_report_choose_span);
+		dialogBuilder.setIcon(android.R.drawable.ic_menu_mylocation);
 		dialogBuilder.setView(viewChooseSpan);
-		//dialogBuilder.show();
 		
 		try{
 			graphViewTest(expenses);
@@ -341,7 +342,7 @@ public class ExpenseReporting extends Activity {
 	private OnMenuItemClickListener lReportBySpanClicked = new OnMenuItemClickListener(){
 		@Override
 		public boolean onMenuItemClick(MenuItem mi) {
-			dialogChooseSpan = dialogBuilder.show();
+			dialogChooseSpan = dialogBuilder.show();	
 			return false;
 		}		
 	};
@@ -355,14 +356,21 @@ public class ExpenseReporting extends Activity {
 		}		
 	};
 	
+	/**
+	 * Date span filter will default to using todays date if a date is not specified in either
+	 * (or both) date fields before the button is clicked.
+	 */
 	private OnClickListener lUseDateSpanFilterClicked = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			dateSpanFrom = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanFrom)).getText().toString();
-			dateSpanTo = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanTo)).getText().toString();
+			EditText txtFrom = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanFrom));
+			EditText txtTo = ((EditText)viewChooseSpan.findViewById(R.id.txtReportSpanTo));
+			dateSpanFrom = txtFrom.length() > 0 ? txtFrom.getText().toString() : DateHelper.DateToString(new Date());
+			dateSpanTo = txtTo.length() > 0 ? txtTo.getText().toString() : DateHelper.DateToString(new Date());
 			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, dateSpanTo);
 			bindReportTable(expenses);
 			dialogChooseSpan.dismiss();
+			((ViewManager)viewChooseSpan.getParent()).removeView(viewChooseSpan);//remove view from context, in case the dialog is called again
 		}
 	};
 }

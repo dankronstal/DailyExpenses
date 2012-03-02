@@ -199,6 +199,7 @@ public class ExpenseEditing extends Activity {
 			}			
 			layoutUpdate.setVisibility(View.GONE);
 			bindExpenseTable();
+			
 		}
 	};
 }

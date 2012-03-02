@@ -32,7 +32,7 @@
         <LinearLayout
             android:id="@+id/layoutUpdateFields"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" >
 
             <Spinner
                 android:id="@+id/spinnerEditType"
@@ -42,7 +42,7 @@
 
             <EditText
                 android:id="@+id/txtEditAmount"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="3"
@@ -55,7 +55,6 @@
                 android:id="@+id/btnSaveEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/btn_save_edit" />
         </LinearLayout>
 

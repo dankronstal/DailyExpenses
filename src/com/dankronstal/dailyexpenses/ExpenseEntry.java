@@ -200,7 +200,6 @@ public class ExpenseEntry extends Activity {
 		public boolean onMenuItemClick(MenuItem item) {
 			Intent myIntent = new Intent();
 			myIntent.setClassName("com.dankronstal.dailyexpenses", "com.dankronstal.dailyexpenses.ExpenseReporting");
-			//myIntent.putExtra("dateFromMain", getSelectedDate()); // key/value pair, where key needs current package prefix.
 			startActivity(myIntent); 
 			return false;
 		}    	
