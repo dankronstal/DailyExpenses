@@ -1,7 +1,9 @@
 package com.dankronstal.dailyexpenses;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -117,10 +119,15 @@ public class ExpenseReporting extends Activity {
 	    
 	    MenuItem mi = menu.findItem(R.id.miSpanOf);
 		mi.setIcon(android.R.drawable.ic_menu_view);
-		mi.setOnMenuItemClickListener(lReportBySpanClicked);
-		
+		mi.setOnMenuItemClickListener(lReportBySpanClicked);		
 		mi = menu.findItem(R.id.miDayOf);
-		mi.setOnMenuItemClickListener(lReportByDayClicked);
+		mi.setOnMenuItemClickListener(lReportByDayClicked);		
+		mi = menu.findItem(R.id.miWeekOf);
+		mi.setOnMenuItemClickListener(lReportByWeekClicked);		
+		mi = menu.findItem(R.id.miMonthOf);
+		mi.setOnMenuItemClickListener(lReportByMonthClicked);		
+		mi = menu.findItem(R.id.miYearOf);
+		mi.setOnMenuItemClickListener(lReportByYearClicked);
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -245,7 +252,7 @@ public class ExpenseReporting extends Activity {
 		String where = null;
 		String[] args = null;
 		if(startDate != null && startDate.length() > 0 && endDate != null && endDate.length() > 0){
-			where = ExpenseContentProvider.DATEINCURRED + " >= date('"+startDate+"') AND " + ExpenseContentProvider.DATEINCURRED + " <= date('"+endDate+"')";
+			where = ExpenseContentProvider.DATEINCURRED + " >= date('"+DateHelper.makeShortDate(startDate)+"') AND " + ExpenseContentProvider.DATEINCURRED + " <= date('"+DateHelper.makeShortDate(endDate)+"')";
 			//args = new String[] {DateHelper.makeShortDate(startDate), DateHelper.makeShortDate(endDate)};
 		}
 		if(startDate != null && endDate == null){
@@ -351,6 +358,55 @@ public class ExpenseReporting extends Activity {
 		@Override
 		public boolean onMenuItemClick(MenuItem mi) {
 			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, null);
+			bindReportTable(expenses);
+			return false;
+		}		
+	};
+	
+	private OnMenuItemClickListener lReportByWeekClicked = new OnMenuItemClickListener(){
+		@Override
+		public boolean onMenuItemClick(MenuItem mi) {
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTime(new Date());
+			int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)-1;
+			if(dayOfWeek > 0)
+				calendar.add(Calendar.DAY_OF_MONTH, dayOfWeek*-1);
+			dateSpanFrom = DateHelper.DateToString(calendar.getTime());
+			calendar.add(Calendar.DAY_OF_MONTH, 7);
+			dateSpanTo = DateHelper.DateToString(calendar.getTime());
+			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, dateSpanTo);
+			bindReportTable(expenses);
+			return false;
+		}		
+	};
+	
+	private OnMenuItemClickListener lReportByMonthClicked = new OnMenuItemClickListener(){
+		@Override
+		public boolean onMenuItemClick(MenuItem mi) {
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTime(new Date());
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+			dateSpanFrom = DateHelper.DateToString(calendar.getTime());
+			calendar.add(Calendar.MONTH, 1);
+			calendar.add(Calendar.DAY_OF_MONTH, -1);
+			dateSpanTo = DateHelper.DateToString(calendar.getTime());
+			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, dateSpanTo);
+			bindReportTable(expenses);
+			return false;
+		}		
+	};
+	
+	private OnMenuItemClickListener lReportByYearClicked = new OnMenuItemClickListener(){
+		@Override
+		public boolean onMenuItemClick(MenuItem mi) {
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTime(new Date());
+			calendar.set(Calendar.DAY_OF_YEAR, 1);
+			dateSpanFrom = DateHelper.DateToString(calendar.getTime());
+			calendar.add(Calendar.YEAR, 1);
+			calendar.add(Calendar.DAY_OF_YEAR, -1);
+			dateSpanTo = DateHelper.DateToString(calendar.getTime());
+			ArrayList<Expense> expenses = getAllExpenses(currentlySortedBy, dateSpanFrom, dateSpanTo);
 			bindReportTable(expenses);
 			return false;
 		}		

@@ -24,7 +24,8 @@ public class DateHelper {
 	 */
 	public static String DateToString(Date dateToConvert)
 	{
-		return dateToConvert.toString();
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		return dateFormat.format(dateToConvert);
 	}
 	
 	/**

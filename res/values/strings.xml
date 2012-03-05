@@ -15,11 +15,11 @@
     <string name="btn_save_edit">Update</string>
     <string name="lbl_edit_id">ID</string>
     <string name="lbl_menu_report">Reports</string>
-    <string name="lbl_mi_dayof">Day</string>
-    <string name="lbl_mi_weekof">Week</string>
-    <string name="lbl_mi_yearof">Year</string>
-    <string name="lbl_mi_spanof">Span</string>
-    <string name="lbl_mi_monthof">Month</string>
+    <string name="lbl_mi_dayof">Current Day</string>
+    <string name="lbl_mi_weekof">Current Week</string>
+    <string name="lbl_mi_yearof">Current Year</string>
+    <string name="lbl_mi_spanof">Custom Date</string>
+    <string name="lbl_mi_monthof">Current Month</string>
     <string name="lbl_mi_viewby">View By</string>
     <string name="lbl_report_choose_span">Choose Span of Days:</string>
     <string name="lbl_report_spanto"> to </string>
