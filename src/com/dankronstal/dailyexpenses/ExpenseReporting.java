@@ -1,5 +1,7 @@
 package com.dankronstal.dailyexpenses;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,6 +37,8 @@ import com.jjoe64.graphview.BarGraphView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.GraphViewSeries;
+import com.jjoe64.graphview.GraphView.LegendAlign;
+import com.jjoe64.graphview.LineGraphView;
 
 public class ExpenseReporting extends Activity {
 	
@@ -140,7 +144,14 @@ public class ExpenseReporting extends Activity {
 		int[] colors = new int[]{ 
 				Color.rgb(200, 50, 00),
 				Color.rgb(90, 250, 00),
-				Color.rgb(90, 250, 250)
+				Color.rgb(90, 250, 250),
+				Color.rgb(90, 250, 250),
+				Color.rgb(90, 250, 150),
+				Color.rgb(90, 250, 50),
+				Color.rgb(90, 150, 250),
+				Color.rgb(90, 50, 250),
+				Color.rgb(90, 250, 250),
+				Color.rgb(190, 250, 00)				
 		};
 		//get unique labels
 		ArrayList<String> categories = new ArrayList<String>();
@@ -181,9 +192,9 @@ public class ExpenseReporting extends Activity {
 		//graphView.setHorizontalLabels(labels);  
 		//graphView.setVerticalLabels(new String[]{"More", "Some", "Less"});
 		
-//		graphView.setShowLegend(true);  
-//		graphView.setLegendAlign(LegendAlign.BOTTOM);  
-//		graphView.setLegendWidth(200); 
+		graphView.setShowLegend(true);  
+		graphView.setLegendAlign(LegendAlign.MIDDLE);  
+		graphView.setLegendWidth(200);
 		
 		LinearLayout layout = (LinearLayout) findViewById(R.id.layoutReport);
 		layout.addView(graphView);
@@ -237,8 +248,8 @@ public class ExpenseReporting extends Activity {
 	 * pass in a null endDate to get only single specified date.
 	 * otherwise, dates passed will be used.
 	 * @param sortOrder
-	 * @param startDate
-	 * @param endDate
+	 * @param startDate (in YYYY-MM-DD format)
+	 * @param endDate (in YYYY-MM-DD format)
 	 * @return
 	 */
 	private ArrayList<Expense> getAllExpenses(String sortOrder, String startDate, String endDate) {
@@ -252,11 +263,11 @@ public class ExpenseReporting extends Activity {
 		String where = null;
 		String[] args = null;
 		if(startDate != null && startDate.length() > 0 && endDate != null && endDate.length() > 0){
-			where = ExpenseContentProvider.DATEINCURRED + " >= date('"+DateHelper.makeShortDate(startDate)+"') AND " + ExpenseContentProvider.DATEINCURRED + " <= date('"+DateHelper.makeShortDate(endDate)+"')";
+			where = ExpenseContentProvider.DATEINCURRED + " >= date('"+startDate+"') AND " + ExpenseContentProvider.DATEINCURRED + " <= date('"+endDate+"')";
 			//args = new String[] {DateHelper.makeShortDate(startDate), DateHelper.makeShortDate(endDate)};
 		}
 		if(startDate != null && endDate == null){
-			where = ExpenseContentProvider.DATEINCURRED + " like '"+DateHelper.makeShortDate(startDate)+"%'";
+			where = ExpenseContentProvider.DATEINCURRED + " like '"+startDate+"%'";
 			//args = new String[] {DateHelper.makeShortDate(startDate)};
 		}
 		ArrayList<Expense> expenses = new ArrayList<Expense>();

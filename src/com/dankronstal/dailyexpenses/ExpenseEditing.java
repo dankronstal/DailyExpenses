@@ -75,6 +75,10 @@ public class ExpenseEditing extends Activity {
 		if(expenses.size() > 0)
 		{
 			txtNoExpenses.setVisibility(View.GONE);
+			TableRow header = (TableRow)LayoutInflater.from(ExpenseEditing.this).inflate(R.layout.edit_row, null);
+			((TextView)header.findViewById(R.id.txtEditExpenseType)).setTextAppearance(this, android.R.style.TextAppearance_Large);
+			((TextView)header.findViewById(R.id.txtEditExpenseAmount)).setTextAppearance(this, android.R.style.TextAppearance_Large);
+			tblExpenses.addView(header);
 			//following from http://stackoverflow.com/questions/5183968/how-to-add-rows-dynamically-into-table-layout
 			for(Expense e : expenses){				
 			    try {

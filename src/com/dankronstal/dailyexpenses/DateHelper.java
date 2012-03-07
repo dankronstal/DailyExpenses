@@ -80,4 +80,5 @@ public class DateHelper {
 				"-" + (dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth));
 		return theDate;
 	}
+
 }
