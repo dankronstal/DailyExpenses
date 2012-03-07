@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/lbl_edit_type"
-                android:textAppearance="?android:attr/textAppearanceLarge" android:minEms="9"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" android:minEms="9"/>
 
             <TextView
                 android:id="@+id/txtEditExpenseAmount"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/lbl_edit_amount"
-                android:textAppearance="?android:attr/textAppearanceLarge" android:minEms="5"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" android:minEms="5"/>
 
             <TextView
                 android:id="@+id/txtEditDate"

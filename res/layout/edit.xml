@@ -4,68 +4,82 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <DatePicker
-        android:id="@+id/datePickerEdit"
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_marginTop="25dp"/>
-
-    <TextView
-        android:id="@+id/txtNoExpenses"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/txt_no_expenses"
-        android:textAppearance="?android:attr/textAppearanceMedium" android:layout_marginTop="15dp"/>
-
-    <TableLayout
-        android:id="@+id/tblExpenses"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" android:layout_marginTop="15dp">
-
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutUpdate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" android:visibility="gone">
+        android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:id="@+id/layoutUpdateFields"
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-            <Spinner
-                android:id="@+id/spinnerEditType"
-                android:layout_width="0dp"
+            <DatePicker
+                android:id="@+id/datePickerEdit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_marginTop="25dp" />
 
-            <EditText
-                android:id="@+id/txtEditAmount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="3"
-                android:inputType="numberDecimal" >
-
-                <requestFocus />
-            </EditText>
-
-            <Button
-                android:id="@+id/btnSaveEdit"
+            <TextView
+                android:id="@+id/txtNoExpenses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_save_edit" />
+                android:layout_marginTop="15dp"
+                android:text="@string/txt_no_expenses"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TableLayout
+                android:id="@+id/tblExpenses"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" >
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:id="@+id/layoutUpdateFields"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <Spinner
+                        android:id="@+id/spinnerEditType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <EditText
+                        android:id="@+id/txtEditAmount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="3"
+                        android:inputType="numberDecimal" />
+
+                    <Button
+                        android:id="@+id/btnSaveEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_save_edit" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/lbl_edit_zeroout"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/lbl_edit_zeroout"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
